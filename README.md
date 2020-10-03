@@ -1,1 +1,1 @@
-# springcloud example
+spring boot starter example
