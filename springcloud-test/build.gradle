@@ -1,0 +1,29 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.3.RELEASE'
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:2.3.11'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.3.3.RELEASE'
+
+
+    // api ('org.apache.rocketmq:rocketmq-client:4.7.1')
+    // api ('com.dys:rocketmq-spring-boot-starter:0.0.1-SNAPSHOT')
+   // api group: 'org.apache.rocketmq', name: 'rocketmq-spring-boot-starter', version: '2.1.1'
+
+   // api project(':rocketmq-spring-boot-starter')
+
+    api project(':redisson-spring-boot-starter')
+
+
+
+}

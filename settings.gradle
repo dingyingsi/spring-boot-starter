@@ -1,0 +1,40 @@
+ext {
+    nexus = System.getProperty('nexus.url')
+}
+
+gradle.settingsEvaluated {
+    settings ->
+        settings.pluginManagement {
+            resolutionStrategy {
+            }
+            repositories {
+                mavenLocal()
+                maven {
+                    url  "${nexus}/repository/maven-public/"
+                    credentials {
+                        username 'admin'
+                        password 'Dingyingsi1988!'
+                    }
+                    allowInsecureProtocol true
+                    // println "settingsEvaluated repository url: " + url
+                }
+            }
+        }
+}
+
+rootProject.name = 'spring-boot-starter'
+
+include 'datasource-spring-boot-starter'
+include 'datasource-spring-boot-autoconfigure'
+include 'redisson-spring-boot-autoconfigure'
+include 'redisson-spring-boot-starter'
+include 'logback-kafka-logstash-spring-boot'
+include 'kafka-spring-boot-autoconfigure'
+include 'kafka-spring-boot-starter'
+include 'user-action-spring-boot-autoconfigure'
+include 'user-action-spring-boot-starter'
+include 'rocketmq-spring-boot-autoconfigure'
+include 'rocketmq-spring-boot-starter'
+
+include 'springcloud-test'
+

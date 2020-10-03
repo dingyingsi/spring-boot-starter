@@ -1,0 +1,53 @@
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_FILE" value="\${LOG_FILE:-\${LOG_PATH:-\${LOG_TEMP:-\${java.io.tmpdir:-/tmp}}}/spring.log}"/>
+    <property name="REQUEST_LOG_FILE" value="\${LOG_PATH:-\${LOG_TEMP:-\${java.io.tmpdir:-/tmp}}}/request.log"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <!--<define name="hostname" class="ch.qos.logback.core.property.CanonicalHostNamePropertyDefiner"/>-->
+    <springProfile name="!default">
+        <springProperty name="spring.kafka.bootstrap-servers" source="spring.kafka.bootstrap-servers" scope="context"/>
+        <springProperty name="spring.application.name" source="spring.application.name" scope="context"/>
+        <springProperty name="server.port" source="server.port" scope="context"/>
+        <springProperty name="topicId" source="spring.logging.kafka.logstash.topic" scope="context"/>
+        <springProperty name="kafkaServers" source="spring.logging.kafka.logstash.bootstrap-servers" scope="context"/>
+        <appender class="com.github.danielwegener.logback.kafka.KafkaAppender" name="KAFKA">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <fieldNames class="com.dys.spring.log.kafka.logstash.CustomLogstashFieldNames"/>
+                <includeContext>false</includeContext>
+                <version>2</version>
+                <customFields>{"module":"${spring.application.name}","host":"${hostname}"}</customFields>
+                <provider class="net.logstash.logback.composite.loggingevent.ThrowableClassNameJsonProvider">
+                    <fieldName>throwableClass</fieldName>
+                    <useSimpleClassName>false</useSimpleClassName>
+                </provider>
+                <provider class="net.logstash.logback.composite.loggingevent.ThrowableRootCauseClassNameJsonProvider">
+                    <fieldName>throwableRootCauseClass</fieldName>
+                    <useSimpleClassName>false</useSimpleClassName>
+                </provider>
+            </encoder>
+            <topic>${topicId}</topic>
+            <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.NoKeyKeyingStrategy"/>
+            <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy"/>
+            <producerConfig>bootstrap.servers=${kafkaServers}</producerConfig>
+            <producerConfig>acks=0</producerConfig>
+            <producerConfig>linger.ms=1000</producerConfig>
+            <producerConfig>max.block.ms=0</producerConfig>
+            <producerConfig>client.id=${spring.application.name}-logback</producerConfig>
+        </appender>
+        <appender class="ch.qos.logback.classic.AsyncAppender" name="ASYNC_KAFKA">
+            <appender-ref ref="KAFKA"/>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_KAFKA"/>
+        </root>
+    </springProfile>
+    <springProfile name="default">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+    <logger name="org.springframework.cloud.sleuth.instrument.web.TraceFilter" level="OFF"/>
+    <logger name="com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver" level="WARN"/>
+</configuration>

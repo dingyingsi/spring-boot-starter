@@ -1,0 +1,12 @@
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-autoconfigure:2.3.3.RELEASE')
+    api project(':kafka-spring-boot-starter')
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.5.5.RELEASE'
+
+    compileOnly ('org.springframework.boot:spring-boot-starter-web:2.3.3.RELEASE')
+    compileOnly ('org.springframework.boot:spring-boot-starter-aop:2.3.3.RELEASE')
+    compileOnly ('org.apache.commons:commons-lang3:3.11')
+    compileOnly ('org.javassist:javassist:3.25.0-GA')
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+}

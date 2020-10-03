@@ -1,0 +1,4 @@
+
+dependencies {
+    api project(':kafka-spring-boot-autoconfigure')
+}
